@@ -2,17 +2,9 @@
 
 readonly REGISTRY_CERTS_DIR="/workspace/docker/certs.d/$REGISTRY/"
 
-get-cert(){
-    kubectl get secret private-registry-cert \
-      --namespace "${SCF_NAMESPACE}" \
-      --output go-template \
-      --template '{{(index .data "tls.crt")}}'
-}
-
 copy-cert() {
     mkdir --parents "$REGISTRY_CERTS_DIR"
-    get-cert | base64 -d > "$REGISTRY_CERTS_DIR/ca.crt"
-
+    echo "${INTERNAL_CA_CERT}" | base64 -d > "$REGISTRY_CERTS_DIR/ca.crt"
     echo "Sucessfully copied certs"
 }
 
